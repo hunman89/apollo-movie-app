@@ -4,13 +4,12 @@ import { gql } from "apollo-boost";
 import { useMutation } from "@apollo/react-hooks";
 
 const LIKE_MOVIE = gql`
-  mutation likeMovie($id: Int!) {
-    likeMovie(id: $id) @client
+  mutation toggleLikeMovie($id: Int!, $isLiked: Boolean!) {
+    toggleLikeMovie(id: $id, isLiked: $isLiked) @client
   }
 `;
 
 const Container = styled.div`
-  height: 380px;
   height: 400px;
   border-radius: 7px;
   width: 100%;
@@ -22,7 +21,7 @@ const Container = styled.div`
 
 const Poster = styled.div`
   background-image: url(${(props) => props.bg});
-  height: 100%;
+  height: 95%;
   width: 100%;
   background-size: cover;
   background-position: center center;
@@ -31,17 +30,15 @@ const Poster = styled.div`
 
 // eslint-disable-next-line import/no-anonymous-default-export
 export default ({ id, bg, isLiked }) => {
-  const [likeMovie] = useMutation(LIKE_MOVIE, {
-    variables: { id: parseInt(id) },
+  const [toggleMovie] = useMutation(LIKE_MOVIE, {
+    variables: { id: parseInt(id), isLiked },
   });
   return (
     <Container>
       <Link to={`/${id}`}>
         <Poster bg={bg} />
       </Link>
-      <button onClick={isLiked ? null : likeMovie}>
-        {isLiked ? "Unlike" : "Like"}
-      </button>
+      <button onClick={toggleMovie}>{isLiked ? "Unlike" : "Like"}</button>
     </Container>
   );
 };
